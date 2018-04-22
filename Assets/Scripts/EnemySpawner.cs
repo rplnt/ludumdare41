@@ -43,7 +43,7 @@ public class EnemySpawner : MonoBehaviour {
         if (wave == null) return false;
         if (currentUnit >= wave.Length) return false;
 
-        Debug.Log(String.Format("Spawning unit {0} of type '{1}' from wave {2}", currentUnit, wave[currentUnit], currentWave));
+        //Debug.Log(String.Format("Spawning unit {0} of type '{1}' from wave {2}", currentUnit, wave[currentUnit], currentWave));
         GameObject u =  Instantiate(units[wave[currentUnit]], transform.position, transform.rotation);
 
         Unit unit = u.GetComponent<Unit>();

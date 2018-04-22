@@ -37,11 +37,14 @@ public class Unit : MonoBehaviour {
         transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
     }
 
-    void TakeDamage(float damage) {
+    public bool TakeDamage(float damage) {
         health -= damage;
         if (health <= 0.0f) {
             Die();
+            return true;
         }
+
+        return false;
     }
 
     void Die() {

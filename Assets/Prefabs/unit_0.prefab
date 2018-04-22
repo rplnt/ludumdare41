@@ -20,9 +20,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4960497792148208}
   - component: {fileID: 114016794129535118}
+  - component: {fileID: 50815800271209780}
   m_Layer: 0
   m_Name: unit_0
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -40,7 +41,7 @@ GameObject:
   - component: {fileID: 58349847620585158}
   m_Layer: 0
   m_Name: ball
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -72,6 +73,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50815800271209780
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1038526559120070}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!58 &58349847620585158
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -81,7 +102,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -98,7 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8adbb3012ef522e4da96ed53a0d6c673, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 1
+  health: 1.2
   speed: 0.8
   navigator: {fileID: 0}
 --- !u!114 &114693039655988418

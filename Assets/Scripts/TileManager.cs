@@ -33,9 +33,8 @@ public class TileManager : MonoBehaviour {
     }
 
 
-    public bool CanPlaceTileAtCursor(int count=1) {
-        Vector3 cursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3Int tilePos = level.WorldToCell(cursorPos);
+    public bool CanPlaceTileAtPosition(Vector3 pos, int count=1) {
+        Vector3Int tilePos = level.WorldToCell(pos);
 
         if (count == 1) {
             return CanPlaceTileAt(tilePos);
@@ -62,10 +61,32 @@ public class TileManager : MonoBehaviour {
         return level.GetCellCenterWorld(pos);
     }
 
+    public Vector3 PlaceTowerAtPosition(int upgrade, Vector3 pos) {
+        Vector3Int tilePos = level.WorldToCell(pos);
+        return PlaceTowerAt(upgrade, tilePos);
+    }
+
     public Vector3 PlaceTowerAtMousePosition(int upgrade) {
         Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int tilePos = level.WorldToCell(pos);
 
         return PlaceTowerAt(upgrade, tilePos);
+    }
+
+    public Vector3 PlaceTowerBellowMousePosition(int upgrade) {
+        Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3Int tilePos = level.WorldToCell(pos);
+
+        return PlaceTowerAt(upgrade, new Vector3Int(tilePos.x, tilePos.y - 1, tilePos.z));
+    }
+
+    public Vector2Int WorldToLevel(Vector3 pos) {
+        Vector3Int p = level.WorldToCell(pos);
+        return new Vector2Int(p.x, p.y);
+    }
+
+    public void ClearSpot(Vector3 pos) {
+        Vector3Int p = level.WorldToCell(pos);
+        level.SetTile(p, grass);
     }
 }
