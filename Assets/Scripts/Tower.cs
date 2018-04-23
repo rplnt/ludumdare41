@@ -82,8 +82,8 @@ public class Tower : MonoBehaviour {
     public void Upgrade() {
         level++;
         damage *= 1.5f;
-        chargingSpeed *= 1.5f;
-        delay += 0.2f;
+        chargingSpeed *= 1.2f;
+        delay += 0.1f;
 
         transform.GetComponent<CircleCollider2D>().radius = transform.GetComponent<CircleCollider2D>().radius * 1.5f;
         GetComponentInChildren<SpriteRenderer>().sprite = gems[level];

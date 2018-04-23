@@ -42,7 +42,6 @@ public class Match3 : MonoBehaviour {
 
         int count = Check(pos.x, pos.y, match);        
         if (count >= 3) {
-            Debug.Log("MATCH" + count + " at " + pos);
             foreach(Tower t in selector) {
                 if (t == match) continue;
                 Vector2Int lp = LocalPos(t.x, t.y);

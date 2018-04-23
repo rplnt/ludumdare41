@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [System.Serializable]
 public struct TowerData {
@@ -28,18 +29,56 @@ public class GameManager : MonoBehaviour {
 
     public TowerData[] towers;
     TowerData[] next = new TowerData[2];
+    TowerData[] nextnext = new TowerData[2];
 
     public GameObject towerPrefab;
 
     int chanceOfSingle = 1;
 
     Match3 match3;
+    UIManager ui;
+
+    public void RestoreHealth() {
+        Health = 3;
+    }
+
+    public void Intermission() {
+        placing = true;
+        ui.ShowTopPanel();
+    }
+
+    public void RunGame() {
+        Health = 3;
+        ui.UpdateHealth(Health);
+        placing = false;
+    }
+
+    public void Damage() {
+        Health -= 1;
+        ui.UpdateHealth(Health);
+        if (Health <= 0) {
+            placing = false;
+            ui.ShowGameOver(Score);
+        }
+    }
+
+    public void Win() {
+
+    }
 
 
     void Start () {
         tm = this.GetComponent<TileManager>();
         match3 = FindObjectOfType<Match3>();
+        ui = FindObjectOfType<UIManager>();
+
+        nextnext[0] = towers[0];
+        nextnext[1] = new TowerData { nil = true };
         Next();
+
+        Cash = 5;
+        ui.UpdateCash(Cash);
+        ui.UpdateScore(Score);
     }
 
 
@@ -51,16 +90,20 @@ public class GameManager : MonoBehaviour {
             placer.transform.position = placingPos;
 
             bool canPlace = tm.CanPlaceTileAtPosition(placingPos, next[1].nil ? 1 : 2);
-            canPlace &= true; // CASH
+            canPlace &= Cash >= 1;
             TogglePlacerStatus(canPlace);
 
             if (canPlace && Input.GetMouseButtonDown(0)) {
-                Place();
-                Next();
+                EventSystem es = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+                if (!es.IsPointerOverGameObject()) {
+                    Place();
+                    Next();
+                }
              }
 
         }
 	}
+
 
     bool placerStatus = false;
     void TogglePlacerStatus(bool show) {
@@ -90,33 +133,35 @@ public class GameManager : MonoBehaviour {
         placerStatus = show;
     }
 
+    public void CountKill() {
+        Score++;
+        Cash++;
+        ui.UpdateCash(Cash);
+        ui.UpdateScore(Score);
+    }
+
 
     void Place() {
         Vector3 posA, posB;
-        int cost = 0;
 
         // first tower
         posA = tm.PlaceTowerAtMousePosition(0);
         SpawnCrystal(posA, next[0]);
-        cost++;
+        Cash--;
 
         // second tower
-        if (!next[1].nil) {
+        if (!next[1].nil && Cash > 0) {
             posB = tm.PlaceTowerBellowMousePosition(0);
             SpawnCrystal(posB, next[1]);
-            cost++;
+            Cash--;
 
-            UpgradeTowers(match3.CheckFrom(tm.WorldToLevel(posB)));
+            Score += UpgradeTowers(match3.CheckFrom(tm.WorldToLevel(posB)));
         }
 
-        match3.CheckFrom(tm.WorldToLevel(posA));
+        Score += UpgradeTowers(match3.CheckFrom(tm.WorldToLevel(posA)));
 
-        // prepare next
-        Next();
-        
-
-        // substract cash
-        Cash -= cost;
+        ui.UpdateCash(Cash);
+        ui.UpdateScore(Score);
     }
 
 
@@ -154,14 +199,18 @@ public class GameManager : MonoBehaviour {
 
 
     void Next() {
-        next[0] = towers[Random.Range(0, towers.Length)];
+        next[0] = nextnext[0];
+        next[1] = nextnext[1];
 
+        nextnext[0] = towers[Random.Range(0, towers.Length)];
         if (Random.Range(0, chanceOfSingle) <= 1) {
-            next[1] = new TowerData { nil = true };
+            nextnext[1] = new TowerData { nil = true };
             chanceOfSingle++;
         } else {
-            next[1] = towers[Random.Range(0, towers.Length)];
+            nextnext[1] = towers[Random.Range(0, towers.Length)];
         }
+
+        ui.UpdateNext(nextnext[0], nextnext[1]);
     }
 
  }

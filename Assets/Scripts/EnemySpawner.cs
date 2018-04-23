@@ -15,27 +15,44 @@ public class EnemySpawner : MonoBehaviour {
     int currentUnit = 0;
     int[] wave;
 
+    bool intermission = true;
     float lastUnitSpawn = 0.0f;
-    float lastWaveFinished = 0.0f;
+
+    GameManager gm;
+    UIManager ui;
+
+    int totalUnits = 0;
 
     private void Start() {
-        wave = LoadWave();
+        gm = FindObjectOfType<GameManager>();
+        ui = FindObjectOfType<UIManager>();
+        FindObjectOfType<UIManager>().NextWave(currentWave + 1, waves.Length);
     }
-
-
+    
     private void Update() {
+        if (intermission) return;
         if (wave == null) return;
 
-        if (Time.time > lastWaveFinished + waveDelay && Time.time > lastUnitSpawn + unitDelay) {
+        if (Time.time > lastUnitSpawn + unitDelay) {
             if (!SpawnNext()) {
-                lastWaveFinished = Time.time;
-                currentWave++;
-                wave = LoadWave();
+                intermission = true;
             } else {
                 lastUnitSpawn = Time.time;
             }
         }
+    }
 
+
+    public void NextWave() {
+        ui.NextWave(currentWave + 1, waves.Length);
+        ui.DisableGOButton();
+        intermission = false;
+        gm.RestoreHealth();
+        wave = LoadWave();
+        currentWave++;
+        if (currentWave > waves.Length) {
+            gm.Win();
+        }
     }
 
 
@@ -46,12 +63,26 @@ public class EnemySpawner : MonoBehaviour {
         //Debug.Log(String.Format("Spawning unit {0} of type '{1}' from wave {2}", currentUnit, wave[currentUnit], currentWave));
         GameObject u =  Instantiate(units[wave[currentUnit]], transform.position, transform.rotation);
 
+        BallAnimator ba = u.GetComponentInChildren<BallAnimator>();
         Unit unit = u.GetComponent<Unit>();
-        unit.navigator = this.GetComponent<Navigation>();
+
+        ba.speed += (currentWave * 3);
+        unit.speed += (currentWave * (1 / 13.3f));
+
+        unit.navigator = GetComponent<Navigation>();
         unit.name = String.Format("Ball_{0}_{1}", currentWave, currentUnit);
 
         currentUnit++;
+        totalUnits++;
         return true;
+    }
+
+    public void SubUnit() {
+        totalUnits--;
+        if (totalUnits == 0) {
+            ui.EnableGOButton();
+            gm.Intermission();
+        }
     }
 
 

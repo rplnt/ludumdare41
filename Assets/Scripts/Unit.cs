@@ -30,6 +30,8 @@ public class Unit : MonoBehaviour {
     }
 
     void Finish() {
+        FindObjectOfType<GameManager>().Damage();
+        FindObjectOfType<EnemySpawner>().SubUnit();
         Destroy(gameObject);
     }
 
@@ -49,6 +51,8 @@ public class Unit : MonoBehaviour {
 
     void Die() {
         // play explosion
+        FindObjectOfType<GameManager>().CountKill();
+        FindObjectOfType<EnemySpawner>().SubUnit();
         Destroy(gameObject);
     }
 }

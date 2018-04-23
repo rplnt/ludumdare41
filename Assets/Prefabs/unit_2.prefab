@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114016794129535118}
   - component: {fileID: 50815800271209780}
   m_Layer: 0
-  m_Name: unit_0
+  m_Name: unit_2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8adbb3012ef522e4da96ed53a0d6c673, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 1.2
+  health: 9
   speed: 0.93333334
   navigator: {fileID: 0}
 --- !u!114 &114693039655988418
@@ -168,7 +168,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 9d71d27aa39dfb141aaa9f849c4bec29, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bfa7a3de9fe2fea4b965bc95c19936a7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
