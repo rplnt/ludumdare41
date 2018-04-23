@@ -56,7 +56,10 @@ public class TileManager : MonoBehaviour {
 
 
     public Vector3 PlaceTowerAt(int upgrade, Vector3Int pos) {
+        Debug.Log(towers[upgrade]);
+        Debug.Log(level.GetTile(pos).name);
         level.SetTile(pos, towers[upgrade]);
+        Debug.Log(level.GetTile(pos).name);
 
         return level.GetCellCenterWorld(pos);
     }

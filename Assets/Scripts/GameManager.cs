@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour {
     public float placerAlpha;
     public bool placing;
     Vector3 placingPos;
+    bool placerStatus = false;
 
     public int Score { get; protected set; }
     public int Cash { get; protected set; }
@@ -90,8 +91,11 @@ public class GameManager : MonoBehaviour {
             placer.transform.position = placingPos;
 
             bool canPlace = tm.CanPlaceTileAtPosition(placingPos, next[1].nil ? 1 : 2);
-            canPlace &= Cash >= 1;
-            TogglePlacerStatus(canPlace);
+            canPlace &= Cash >= (next[1].nil ? 1 : 2);
+
+            if (placerStatus != canPlace) {
+                TogglePlacerStatus(canPlace);
+            }
 
             if (canPlace && Input.GetMouseButtonDown(0)) {
                 EventSystem es = GameObject.Find("EventSystem").GetComponent<EventSystem>();
@@ -99,15 +103,20 @@ public class GameManager : MonoBehaviour {
                     Place();
                     Next();
                 }
-             }
+            }
+
+            if (next[1].nil == false && Input.GetAxis("Mouse ScrollWheel") != 0f) {
+                TowerData swap = next[0];
+                next[0] = next[1];
+                next[1] = swap;
+                TogglePlacerStatus(canPlace);
+            }
 
         }
 	}
 
 
-    bool placerStatus = false;
     void TogglePlacerStatus(bool show) {
-        if (placerStatus == show) return;
         if (placer.activeSelf == false) return;
 
         for (int i = 0; i < placer.transform.childCount; i++) {
@@ -143,22 +152,31 @@ public class GameManager : MonoBehaviour {
 
     void Place() {
         Vector3 posA, posB;
+        int up;
 
         // first tower
+        Debug.Log("PLACING TOWER A");
         posA = tm.PlaceTowerAtMousePosition(0);
+        Debug.Log("PLACED AT " + posA);
         SpawnCrystal(posA, next[0]);
         Cash--;
 
         // second tower
         if (!next[1].nil && Cash > 0) {
+            Debug.Log("PLACING TOWER B");
             posB = tm.PlaceTowerBellowMousePosition(0);
+            Debug.Log("PLACED AT " + posB);
             SpawnCrystal(posB, next[1]);
             Cash--;
 
-            Score += UpgradeTowers(match3.CheckFrom(tm.WorldToLevel(posB)));
+            up = UpgradeTowers(match3.CheckFrom(tm.WorldToLevel(posB)));
+            Score += up;
+            Cash += up / 3;
         }
 
-        Score += UpgradeTowers(match3.CheckFrom(tm.WorldToLevel(posA)));
+        up = UpgradeTowers(match3.CheckFrom(tm.WorldToLevel(posA)));
+        Score += up;
+        Cash += up / 3;
 
         ui.UpdateCash(Cash);
         ui.UpdateScore(Score);
